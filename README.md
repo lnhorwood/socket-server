@@ -52,8 +52,25 @@ There are three types of socket available:
     - validateToken - Responds with event 'authenticated' and a payload of the given token when successful. Responds
       with 'tokenValidationFailed' and a payload of the given error when unsuccessful.
 - [UnsecureSocket](https://github.com/lnhorwood/socket-server/blob/master/src/model/unsecure-socket.ts)
+
   - Listens to events when the client is not authenticated.
   - Sends events when the client is not authenticated.
+
+[SocketAuthenticator](https://github.com/lnhorwood/socket-server/blob/master/src/model/socket-authenticator.ts) is an
+interface that is used to configure
+[SecureSocketServer](https://github.com/lnhorwood/socket-server/blob/master/src/model/secure-socket-server.ts). It
+requires the following function implementations:
+
+- connect - This should return an observable that informs
+  [SecureSocketServer](https://github.com/lnhorwood/socket-server/blob/master/src/model/secure-socket-server.ts) when
+  the authenticator is ready to handle requests.
+- login - This should return an observable containing the client's token. It takes username/password credentials as a
+  parameter using the
+  [SocketCredentials](https://github.com/lnhorwood/socket-server/blob/master/src/model/socket-credentials.ts) interface.
+- logout - This should return an observable that updates when the client has been logged out following the logout
+  request.
+- validate - This should validate the given token and return an observable with either the given token or an updated
+  token when it is valid.
 
 ```js
 import { SocketServer } from "@horwood/socket-server";
@@ -69,6 +86,7 @@ socketServer
     // Talks to unauthenticated clients.
   });
 const authenticator = {
+  connect: () => of(null),
   login: credentials => of("exampleToken"),
   logout: () => of(null),
   validate: token => of("exampleValidatedToken")

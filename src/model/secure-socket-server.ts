@@ -1,8 +1,7 @@
 import { fromEvent, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, mergeMap } from "rxjs/operators";
 import { Server, Socket } from "socket.io";
 import {
-  RxSocket,
   RxSocketServer,
   SecureSocket,
   SocketAuthenticator,
@@ -20,7 +19,8 @@ export class SecureSocketServer implements RxSocketServer {
   }
 
   on(event: "connection"): Observable<SecureSocket> {
-    return fromEvent(<any>this._server, event).pipe(
+    return this._authenticator.connect().pipe(
+      mergeMap(() => fromEvent<Socket>(<any>this._server, event)),
       map((socket: Socket) => new SecureSocket(this._authenticator, socket))
     );
   }
