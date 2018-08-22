@@ -1,0 +1,33 @@
+# This is a sample build configuration for JavaScript.
+# Check our guides at https://confluence.atlassian.com/x/14UWN for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: node:6.9.4
+
+pipelines:
+  default:
+    - step:
+        name: Run unit tests
+        image: node:latest
+        script:
+          - npm install
+          - npm test
+  custom: 
+      publish:
+        - step:
+            name: Publish changes to NPM and GitHub
+            image: node:latest
+            script:
+              - git checkout master
+              - printf "//`node -p \"require('url').parse('https://registry.npmjs.org').host\"`/:_authToken=${NPM_TOKEN}\nregistry=${NPM_REGISTRY_URL:-https://registry.npmjs.org}\nscope=@horwood\n" >> ~/.npmrc
+              - npm install
+              - git config user.email "${GIT_EMAIL}"
+              - git config user.name "Luke Horwood"
+              - git reset --hard
+              - npm version patch -m "Upgrading to %s for release."
+              - npm run build
+              - npm publish dist --access=public
+              - git push --follow-tags    
+              - git remote add github git@github.com:lnhorwood/socket-server.git
+              - git push github master --follow-tags
