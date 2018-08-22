@@ -1,0 +1,25 @@
+{
+  "name": "@horwood/socket-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lnhorwood/socket-server.git"
+  },
+  "scripts": {
+    "build": "ts-lib"
+  },
+  "author": "Luke Horwood",
+  "license": "ISC",
+  "dependencies": {
+    "rxjs": "^6.2.2",
+    "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "@horwood/ts-lib": "^1.0.7",
+    "@types/socket.io": "^1.4.36",
+    "prettier": "^1.14.2"
+  }
+}

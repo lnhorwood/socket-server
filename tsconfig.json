@@ -1,0 +1,7 @@
+{
+  "extends": "./node_modules/@horwood/ts-lib/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "."
+  },
+  "exclude": ["node_modules"]
+}
