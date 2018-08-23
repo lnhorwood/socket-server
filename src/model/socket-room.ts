@@ -1,4 +1,4 @@
 export enum SocketRoom {
-  AUTHENTICATED = "authenticated",
-  UNAUTHENTICATED = "unauthenticated"
+  AUTHENTICATED = 'authenticated',
+  UNAUTHENTICATED = 'unauthenticated'
 }

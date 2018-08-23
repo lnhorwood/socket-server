@@ -1,5 +1,5 @@
-import { Observable } from "rxjs";
-import { SocketCredentials } from "./";
+import { Observable } from 'rxjs';
+import { SocketCredentials } from './';
 
 export interface SocketAuthenticator {
   login(credentials: SocketCredentials): Observable<string>;

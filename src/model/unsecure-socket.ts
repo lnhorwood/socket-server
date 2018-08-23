@@ -1,7 +1,7 @@
-import { Socket } from "socket.io";
-import { Observable } from "rxjs";
-import { RxSocket, SocketRoom } from "./";
-import { filter } from "rxjs/operators";
+import { Socket } from 'socket.io';
+import { Observable } from 'rxjs';
+import { RxSocket, SocketRoom } from './';
+import { filter } from 'rxjs/operators';
 
 export class UnsecureSocket extends RxSocket {
   constructor(socket: Socket) {

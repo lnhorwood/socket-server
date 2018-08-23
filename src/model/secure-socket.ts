@@ -1,13 +1,7 @@
-import { Socket } from "socket.io";
-import { Observable } from "rxjs";
-import { filter, mergeMap } from "rxjs/operators";
-import {
-  RxSocket,
-  SocketAuthenticator,
-  SocketCredentials,
-  SocketEvent,
-  SocketRoom
-} from "./";
+import { Socket } from 'socket.io';
+import { Observable, of } from 'rxjs';
+import { catchError, filter, mergeMap } from 'rxjs/operators';
+import { RxSocket, SocketAuthenticator, SocketCredentials, SocketEvent, SocketRoom } from './';
 
 export class SecureSocket extends RxSocket {
   private _token: string;
@@ -18,42 +12,61 @@ export class SecureSocket extends RxSocket {
       .on<SocketCredentials>(SocketEvent.LOGIN)
       .pipe(
         filter(() => !this.authenticated),
-        mergeMap(authenticator.login)
+        mergeMap((credentials: SocketCredentials) =>
+          authenticator.login(credentials).pipe(
+            catchError(error => {
+              super.emit(SocketEvent.LOGIN_FAILED, error);
+              return of(null);
+            })
+          )
+        ),
+        filter((token: string) => token !== null)
       )
-      .subscribe(
-        (token: string) => this.authenticate(token),
-        error => super.emit(SocketEvent.LOGIN_FAILED, error)
-      );
+      .subscribe((token: string) => this.authenticate(token));
     super
       .on<string>(SocketEvent.LOGOUT)
       .pipe(
         filter(() => this.authenticated),
-        mergeMap(authenticator.logout)
+        mergeMap((token: string) =>
+          authenticator.logout(token).pipe(
+            catchError(error => {
+              super.emit(SocketEvent.LOGOUT_FAILED, error);
+              return of(true);
+            })
+          )
+        ),
+        filter((logoutFailed: boolean) => !logoutFailed)
       )
-      .subscribe(
-        () => this.logout(),
-        error => super.emit(SocketEvent.LOGOUT_FAILED, error)
-      );
+      .subscribe(() => this.logout());
     super
       .on<SocketCredentials>(SocketEvent.REGISTER)
       .pipe(
         filter(() => !this.authenticated),
-        mergeMap(authenticator.register)
+        mergeMap((credentials: SocketCredentials) =>
+          authenticator.register(credentials).pipe(
+            catchError(error => {
+              super.emit(SocketEvent.REGISTRATION_FAILED, error);
+              return of(null);
+            })
+          )
+        ),
+        filter((token: string) => token !== null)
       )
-      .subscribe(
-        (token: string) => this.authenticate(token),
-        error => super.emit(SocketEvent.REGISTRATION_FAILED, error)
-      );
+      .subscribe((token: string) => this.authenticate(token));
     super
       .on<string>(SocketEvent.VALIDATE_TOKEN)
       .pipe(
-        filter(() => !this.authenticated),
-        mergeMap(authenticator.validate)
+        mergeMap((token: string) =>
+          authenticator.validate(token).pipe(
+            catchError(error => {
+              super.emit(SocketEvent.TOKEN_VALIDATION_FAILED, error);
+              return of(null);
+            })
+          )
+        ),
+        filter((token: string) => token !== null)
       )
-      .subscribe(
-        (token: string) => this.authenticate(token),
-        error => super.emit(SocketEvent.TOKEN_VALIDATION_FAILED, error)
-      );
+      .subscribe((token: string) => this.authenticate(token));
   }
 
   emit<T>(event: string, payload: T): void {

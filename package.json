@@ -21,5 +21,9 @@
     "@horwood/ts-lib": "^1.0.7",
     "@types/socket.io": "^1.4.36",
     "prettier": "^1.14.2"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true
   }
 }

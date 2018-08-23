@@ -1,5 +1,5 @@
-import { fromEvent, Observable } from "rxjs";
-import { Socket } from "socket.io";
+import { fromEvent, Observable } from 'rxjs';
+import { Socket } from 'socket.io';
 
 export class RxSocket {
   constructor(private _socket: Socket) {}
