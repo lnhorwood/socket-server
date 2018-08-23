@@ -35,6 +35,16 @@ export class SecureSocket extends RxSocket {
         error => super.emit(SocketEvent.LOGOUT_FAILED, error)
       );
     super
+      .on<SocketCredentials>(SocketEvent.REGISTER)
+      .pipe(
+        filter(() => !this.authenticated),
+        mergeMap(authenticator.register)
+      )
+      .subscribe(
+        (token: string) => this.authenticate(token),
+        error => super.emit(SocketEvent.REGISTRATION_FAILED, error)
+      );
+    super
       .on<string>(SocketEvent.VALIDATE_TOKEN)
       .pipe(
         filter(() => !this.authenticated),

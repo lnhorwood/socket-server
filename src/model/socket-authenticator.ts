@@ -6,5 +6,7 @@ export interface SocketAuthenticator {
 
   logout(token: string): Observable<void>;
 
+  register(credentials: SocketCredentials): Observable<string>;
+
   validate(token: string): Observable<string>;
 }
