@@ -30,4 +30,4 @@ pipelines:
             - npm publish dist --access=public
             - git push --follow-tags
             - git remote add github git@github.com:lnhorwood/socket-server.git
-            - git push github master --follow-tags
+            - git push github master -f --follow-tags
