@@ -30,7 +30,7 @@ export class SecureSocket extends RxSocket {
         mergeMap(() =>
           authenticator.logout(this.token).pipe(
             catchError(error => {
-              super.emit(SocketEvent.LOGOUT_FAILED, error);
+              this.invalidate(SocketEvent.LOGOUT_FAILED, error);
               return of(true);
             })
           )
@@ -59,7 +59,7 @@ export class SecureSocket extends RxSocket {
         mergeMap((token: string) =>
           authenticator.validate(token).pipe(
             catchError(error => {
-              super.emit(SocketEvent.TOKEN_VALIDATION_FAILED, error);
+              this.invalidate(SocketEvent.TOKEN_VALIDATION_FAILED, error);
               return of(null);
             })
           )
@@ -99,9 +99,16 @@ export class SecureSocket extends RxSocket {
   }
 
   private logout(): void {
-    this.join(SocketRoom.UNAUTHENTICATED);
-    this.leave(SocketRoom.AUTHENTICATED);
-    delete this._token;
-    super.emit(SocketEvent.LOGOUT_SUCCESS);
+    this.invalidate(SocketEvent.LOGOUT_SUCCESS);
   }
+
+  private invalidate<T>(event: SocketEvent, message?: T): void {
+    if (this.authenticated) {
+      this.join(SocketRoom.UNAUTHENTICATED);
+      this.leave(SocketRoom.AUTHENTICATED);
+      delete this._token;
+    }
+    super.emit<T>(event, message);
+  }
+
 }
