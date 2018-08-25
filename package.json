@@ -18,7 +18,7 @@
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
-    "@horwood/ts-lib": "^1.0.7",
+    "@horwood/ts-lib": "^1.0.8",
     "@types/socket.io": "^1.4.36",
     "prettier": "^1.14.2"
   },
