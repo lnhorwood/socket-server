@@ -27,8 +27,8 @@ export class SecureSocket extends RxSocket {
       .on<string>(SocketEvent.LOGOUT)
       .pipe(
         filter(() => this.authenticated),
-        mergeMap((token: string) =>
-          authenticator.logout(token).pipe(
+        mergeMap(() =>
+          authenticator.logout(this.token).pipe(
             catchError(error => {
               super.emit(SocketEvent.LOGOUT_FAILED, error);
               return of(true);
