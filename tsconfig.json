@@ -1,7 +1,8 @@
 {
   "extends": "./node_modules/@horwood/ts-lib/tsconfig.json",
   "compilerOptions": {
-    "rootDir": "."
+    "rootDir": ".",
+    "lib": ["es2017"]
   },
   "exclude": ["node_modules"]
 }

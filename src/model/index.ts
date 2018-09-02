@@ -1,11 +1,8 @@
-export { RxSocket } from './rx-socket';
-export { RxSocketServer } from './rx-socket-server';
 export { SecureSocket } from './secure-socket';
 export { SecureSocketServer } from './secure-socket-server';
 export { SocketAuthenticator } from './socket-authenticator';
+export { SocketChannel } from './socket-channel';
+export { SocketServerChannel } from './socket-server-channel';
 export { SocketCredentials } from './socket-credentials';
 export { SocketEvent } from './socket-event';
 export { SocketRoom } from './socket-room';
-export { SocketServer } from './socket-server';
-export { UnsecureSocket } from './unsecure-socket';
-export { UnsecureSocketServer } from './unsecure-socket-server';
